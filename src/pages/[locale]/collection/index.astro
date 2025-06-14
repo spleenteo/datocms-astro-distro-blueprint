@@ -4,58 +4,38 @@ import { executeQuery } from '~/lib/datocms/executeQuery';
 import { getCurrentLocale, getFallbackLocale, isValidLocale } from '~/lib/i18n';
 import Layout from '~/layouts/Layout.astro';
 
-export async function getStaticPaths() {
-  const locales = await import('~/lib/i18n').then((m) => m.default());
-  return locales.map((locale: string) => ({
-    params: { locale },
-  }));
-}
-
 // Get and validate current locale
 const { locale } = Astro.params;
 const defaultLocale = await getFallbackLocale();
 
-// Validate locale is provided
-if (!locale) {
-  return Astro.redirect('/en/p/');
+// Check if locale is valid, return 404 if not
+if (locale && !await isValidLocale(locale)) {
+  return Astro.redirect('/404');
 }
 
-// Validate the locale
-const isValid = await isValidLocale(locale);
-if (!isValid) {
-  return new Response(null, {
-    status: 404,
-    statusText: 'Locale not found',
-  });
-}
+// Use validated locale for GraphQL query
+const validLocale = locale || defaultLocale;
 
 // Query for pages
 const query = graphql(/* GraphQL */ `
-  query AllPages($locale: SiteLocale = en) {
-    allPages(locale: $locale) {
+  query AllPagesQl($locale: SiteLocale!) {
+    allPages(filter: {_locales: {allIn: [$locale]}}) {
       id
       title
       slug
     }
-    _allPagesMeta(locale: $locale) {
+    _allPagesMeta(filter: {_locales: {allIn: [$locale]}}) {
       count
     }
   }
 `);
 
-let allPages = [];
-let totalEntries = 0;
+const { allPages, _allPagesMeta } = await executeQuery(query, {
+  includeDrafts: false,
+  variables: { locale: validLocale },
+});
+const totalEntries = _allPagesMeta.count || 0;
 
-try {
-  const result = await executeQuery(query, {
-    includeDrafts: false,
-    variables: { locale },
-  });
-  allPages = result.allPages || [];
-  totalEntries = result._allPagesMeta?.count || 0;
-} catch (error) {
-  console.warn('No pages found or error fetching pages:', error);
-}
 ---
 
 <Layout>
@@ -76,12 +56,12 @@ try {
     allPages.length > 0 ? (
       <div class="container mx-auto px-4">
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {allPages.map((page: any) => (
+          {allPages.map((page) => (
             <article class="card bg-base-100 shadow-xl">
               <div class="card-body">
                 <h3 class="card-title">
                   <a
-                    href={`/${locale}/collection/${page.slug}`}
+                    href={`/${Astro.params.locale}/collection/${page.slug}`}
                     class="hover:text-primary transition-colors"
                   >
                     {page.title}
@@ -96,7 +76,7 @@ try {
       </div>
     ) : (
       <div class="container mx-auto px-4 text-center">
-        <p class="text-gray-600">No pages found.</p>
+        <p class="text-2xl text-gray-600 mt-8">I feel lonely here</p>
       </div>
     )
   }
