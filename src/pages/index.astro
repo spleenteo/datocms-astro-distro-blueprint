@@ -31,58 +31,35 @@ import { ImageGalleryBlockFragment } from '~/components/blocks/ImageGalleryBlock
  *
  * Thanks to gql.tada, the result will be fully typed!
  */
-const query = graphql(
-  /* GraphQL */ `
-    query BasicPageQuery {
-      page {
-        _seoMetaTags {
-          ...TagFragment
-        }
+
+ const { locale } = Astro.params;
+const query = graphql(`
+    query HomePageQuery($locale: SiteLocale = en) {
+      home(locale: $locale) {
+        id
+        _publishedAt
+        _updatedAt
         title
-        _firstPublishedAt
-        structuredText {
-          value
-          blocks {
-            ... on RecordInterface {
-              id
-              __typename
-            }
-            ... on ImageBlockRecord {
-              ...ImageBlockFragment
-            }
-            ... on ImageGalleryBlockRecord {
-              ...ImageGalleryBlockFragment
-            }
-            ... on VideoBlockRecord {
-              ...VideoBlockFragment
-            }
-          }
-          links {
-            ... on RecordInterface {
-              id
-              __typename
-            }
-            ...PageLinkFragment
-            ...PageInlineFragment
-          }
+        subtitle
+        seo: _seoMetaTags {
+          ...TagFragment
         }
       }
     }
   `,
-  [
-    TagFragment,
-    ImageBlockFragment,
-    ImageGalleryBlockFragment,
-    VideoBlockFragment,
-    PageLinkFragment,
-    PageInlineFragment,
-  ],
+  [TagFragment],
 );
+
+const { home } = await executeQuery(query, {
+  includeDrafts: false,
+  variables: { locale },
+});
+
 
 const draftModeEnabled = isDraftModeEnabled(Astro.cookies);
 const { page } = await executeQuery(query, { includeDrafts: draftModeEnabled });
 
-if (!page) {
+if (!home) {
   return new Response(null, {
     status: 404,
     statusText: 'Not found',
@@ -90,50 +67,9 @@ if (!page) {
 }
 ---
 
-<Layout additionalSeo={page._seoMetaTags}>
-  <h1>{page.title}</h1>
-  {
-    /*
-     * Structured Text is a JSON format similar to HTML, but with the advantage
-     * of a significantly reduced and tailored set of possible tags
-     * for editorial content, along with the capability to create hyperlinks
-     * to other DatoCMS records and embed custom DatoCMS blocks.
-     */
-  }
-  <StructuredText
-    data={page.structuredText}
-    blockComponents={/*
-     * If the structured text embeds any blocks, it's up to you to decide
-     * how to render them:
-     */
-    {
-      ImageBlockRecord: ImageBlock,
-      ImageGalleryBlockRecord: ImageGalleryBlock,
-      VideoBlockRecord: VideoBlock,
-    }}
-    linkToRecordComponents={/*
-     * If the structured text includes a link to another DatoCMS record,
-     * it's your decision to determine where the link should lead, or if
-     * you wish to customize its appearance:
-     */
-    {
-      PageRecord: PageLink,
-    }}
-    inlineRecordComponents={/*
-     * If the structured text includes a reference to another DatoCMS
-     * record, it's up to you to decide how to render them:
-     */
-    {
-      PageRecord: PageInline,
-    }}
-    nodeOverrides={/*
-     * You can also override the default rendering of certain nodes.
-     * In this case, we want to tweak the way headings (h1-h6) are rendered.
-     */ {
-      heading: HeadingWithAnchorLink,
-    }}
-  />
-  <footer>Published at {page._firstPublishedAt}</footer>
+<Layout additionalSeo={home._seoMetaTags}>
+  <h1>{home.title}</h1>
+  <footer>Published at {home._publishedAt}</footer>
 
   <DraftModeQueryListener query={query} />
 </Layout>

@@ -1,3 +1,173 @@
+type AdminModelFooterTextField {
+  blocks: [String!]!
+  inlineBlocks: [String!]!
+  links: [String!]!
+  value: JsonField!
+}
+
+type AdminModelLegalTextField {
+  blocks: [String!]!
+  inlineBlocks: [String!]!
+  links: [String!]!
+  value: JsonField!
+}
+
+union AdminModelNavLinksField = MenuDropdownRecord | MenuExternalItemRecord | MenuItemRecord
+
+type AdminModelNavLinksFieldListListNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: [AdminModelNavLinksField!]!
+}
+
+"""Record of type ⚙️ Admin (admin)"""
+type AdminRecord implements RecordInterface {
+  _allNavLinksLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [AdminModelNavLinksFieldListListNonNullMultiLocaleField!]
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _locales: [SiteLocale!]!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  brandColor: ColorField
+  calloutBackground: ColorField!
+  calloutText(
+    """Process content as markdown"""
+    markdown: Boolean
+  ): String
+  footerLinks: [FooterMenuWidgetRecord!]!
+  footerText: AdminModelFooterTextField
+  id: ItemId!
+  legalText: AdminModelLegalTextField!
+  logo: AltFileField
+  navLinks(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [AdminModelNavLinksField!]!
+  socialLinks: [SocialLinkRecord!]!
+}
+
+type AltFileField implements FileFieldInterface {
+  _createdAt: DateTime!
+
+  """
+  The DatoCMS URL where you can edit this entity. To use this field, you need to set a X-Base-Editing-Url header in the request
+  """
+  _editingUrl: String
+  _updatedAt: DateTime!
+  alt(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String!
+  author: String
+  basename: String!
+  blurUpThumb(
+    """
+    Controls the "punch" value (~contrast) of the blurhash decoding algorithm (defaults to 1.0)
+    """
+    punch: Float! = 1
+
+    """Maximum image dimension (defaults to 24px)"""
+    size: Int! = 24
+
+    """Image quality (defaults to 70%)"""
+    quality: Int! = 70
+
+    """Imgix transformations to apply to the image"""
+    imgixParams: ImgixParams
+  ): String
+  blurhash: String
+  colors: [ColorField!]!
+  copyright: String
+  customData(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): CustomData!
+  exifInfo: CustomData!
+  filename: String!
+  focalPoint(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): focalPoint
+  format: String!
+  height: IntType
+  id: UploadId!
+  md5: String!
+  mimeType: String!
+  notes: String
+  responsiveImage(
+    """Imgix transformations to apply to the image"""
+    imgixParams: ImgixParams
+
+    """Specify a custom `sizes` attribute for the image"""
+    sizes: String
+
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): ResponsiveImage
+  size: IntType!
+  smartTags: [String!]!
+  tags: [String!]!
+  thumbhash: String
+  title(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String
+  url(
+    """Imgix transformations to apply to the image"""
+    imgixParams: ImgixParams
+  ): String!
+  video: UploadVideoField
+  width: IntType
+}
+
 """Represents `true` or `false` values."""
 scalar BooleanType
 
@@ -242,6 +412,33 @@ interface FileFieldInterface {
 Represents signed double-precision fractional values as specified by [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
 """
 scalar FloatType
+
+union FooterMenuWidgetModelNavLinksField = MenuExternalItemRecord | MenuItemRecord
+
+"""Block of type 👣 Footer Menu Widget (footer_menu_widget)"""
+type FooterMenuWidgetRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  navLinks: [FooterMenuWidgetModelNavLinksField!]!
+  widgetLabel: String!
+}
 
 type GlobalSeoField {
   facebookPageUrl: String
@@ -2385,6 +2582,81 @@ enum ItemStatus {
 
 scalar JsonField
 
+"""Block of type 🔽 Menu Dropdown (menu_dropdown)"""
+type MenuDropdownRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  pages: [MenuItemRecord!]!
+  staticLabel: String!
+}
+
+"""Block of type 🌐 Menu External Item (menu_external_item)"""
+type MenuExternalItemRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  label: String!
+  url: String!
+}
+
+"""Block of type 🔗 Menu Item (menu_item)"""
+type MenuItemRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  label: String
+  page: PageRecord
+}
+
 scalar MetaTagAttributes
 
 enum MuxThumbnailFormatType {
@@ -2457,6 +2729,17 @@ type Query {
     """
     fallbackLocales: [SiteLocale!]
   ): Site!
+
+  """Returns the single instance record"""
+  admin(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): AdminRecord
 
   """Returns a collection of assets"""
   allUploads(
@@ -2589,6 +2872,32 @@ type Site {
 
 enum SiteLocale {
   en
+  it
+}
+
+"""Block of type 🐦 Social Link (social_link)"""
+type SocialLinkRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  platform: String!
+  url: String!
 }
 
 input StringMatchesFilter {

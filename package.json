@@ -22,7 +22,7 @@
     "@mux/mux-player": "^2.9.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "astro": "^5.8.2",
+    "astro": "^5.9.2",
     "datocms-structured-text-generic-html-renderer": "^5.0.0",
     "datocms-structured-text-to-plain-text": "^5.0.0",
     "gql.tada": "^1.8.10",
