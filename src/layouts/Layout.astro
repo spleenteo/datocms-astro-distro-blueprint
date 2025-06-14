@@ -8,6 +8,7 @@ import { isDraftModeEnabled } from '~/lib/draftMode';
 import '~/global.css';
 
 import { Header } from '~/components/Header';
+import { Footer } from '~/components/Footer';
 
 type Props = {
   additionalSeo?: TitleMetaLinkTag[];
@@ -44,5 +45,7 @@ const result = await executeQuery(query, { includeDrafts: draftModeEnabled });
     <main class="grow">
       <slot />
     </main>
+    <Footer />
+
   </body>
 </html>
