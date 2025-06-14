@@ -1,6 +1,8 @@
 import { defineConfig, envField } from 'astro/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import netlify from '@astrojs/netlify';
+
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -10,6 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+  adapter: netlify(),
   trailingSlash: 'ignore',
   security: {
     checkOrigin: false,
