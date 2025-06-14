@@ -1,12 +1,26 @@
 import { defineConfig, envField } from 'astro/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import react from '@astrojs/react';
+import tailwindcss from '@tailwindcss/vite';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
+  trailingSlash: 'ignore',
   security: {
     checkOrigin: false,
+  },
+  vite: {
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '~': path.resolve(__dirname, './src'),
+      },
+    },
   },
   env: {
     schema: {
