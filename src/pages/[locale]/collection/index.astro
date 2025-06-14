@@ -9,7 +9,7 @@ const { locale } = Astro.params;
 const defaultLocale = await getFallbackLocale();
 
 // Check if locale is valid, return 404 if not
-if (locale && !await isValidLocale(locale)) {
+if (locale && !(await isValidLocale(locale))) {
   return Astro.redirect('/404');
 }
 
@@ -19,12 +19,12 @@ const validLocale = locale || defaultLocale;
 // Query for pages
 const query = graphql(/* GraphQL */ `
   query AllPagesQl($locale: SiteLocale!) {
-    allPages(filter: {_locales: {allIn: [$locale]}}) {
+    allPages(filter: { _locales: { allIn: [$locale] } }, locale: $locale) {
       id
       title
       slug
     }
-    _allPagesMeta(filter: {_locales: {allIn: [$locale]}}) {
+    _allPagesMeta(filter: { _locales: { allIn: [$locale] } }) {
       count
     }
   }
@@ -35,7 +35,6 @@ const { allPages, _allPagesMeta } = await executeQuery(query, {
   variables: { locale: validLocale },
 });
 const totalEntries = _allPagesMeta.count || 0;
-
 ---
 
 <Layout>
