@@ -7,6 +7,8 @@ import { Seo, type TitleMetaLinkTag } from '@datocms/astro';
 import { isDraftModeEnabled } from '~/lib/draftMode';
 import '~/global.css';
 
+import { Header } from '~/components/Header';
+
 type Props = {
   additionalSeo?: TitleMetaLinkTag[];
 };
@@ -33,9 +35,9 @@ const result = await executeQuery(query, { includeDrafts: draftModeEnabled });
 <!doctype html>
 <html data-theme="coffee" lang="en">
   <head>
+    <Seo data={[...result._site.faviconMetaTags, ...additionalSeo]} />
     <meta charset="UTF-8" />
     <meta name="generator" content={Astro.generator} />
-    <Seo data={[...result._site.faviconMetaTags, ...additionalSeo]} />
   </head>
   <body class="min-h-screen flex flex-col">
     <header>
