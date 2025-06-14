@@ -40,14 +40,7 @@ const result = await executeQuery(query, { includeDrafts: draftModeEnabled });
     <meta name="generator" content={Astro.generator} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <header>
-      <h1>DatoCMS + Astro Starter Kit</h1>
-      <nav>
-        <a class="navlink" href="https://www.datocms.com/docs/astro"> 📚 Full Integration Guide </a>
-        <DraftModeToggler />
-      </nav>
-    </header>
-
+    <Header />
     <main class="grow">
       <slot />
     </main>

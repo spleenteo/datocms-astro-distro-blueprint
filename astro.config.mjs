@@ -20,8 +20,8 @@ export default defineConfig({
     defaultLocale: 'en',
     locales: ['en', 'it'],
     routing: {
-      prefixDefaultLocale: false
-    }
+      prefixDefaultLocale: false,
+    },
   },
   vite: {
     plugins: [tailwindcss()],
