@@ -168,8 +168,40 @@ type AltFileField implements FileFieldInterface {
   width: IntType
 }
 
+"""Specifies how to filter Boolean fields"""
+input BooleanFilter {
+  """Search for records with an exact match"""
+  eq: BooleanType
+}
+
 """Represents `true` or `false` values."""
 scalar BooleanType
+
+"""Block of type 🎯 Button (button)"""
+type ButtonRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  label: String!
+  primary: BooleanType!
+  url: String
+}
 
 type CollectionMetadata {
   count: IntType!
@@ -197,6 +229,44 @@ type ColorField {
   green: IntType!
   hex: String!
   red: IntType!
+}
+
+"""Specifies how to filter by creation datetime"""
+input CreatedAtFilter {
+  """
+  Filter records with a value that's strictly greater than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  gt: DateTime
+
+  """
+  Filter records with a value that's less than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  lt: DateTime
+
+  """
+  Filter records with a value that's greater than or equal to than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  gte: DateTime
+
+  """
+  Filter records with a value that's less or equal than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  lte: DateTime
+
+  """
+  Filter records with a value that's within the specified minute range. Seconds and milliseconds are truncated from the argument.
+  """
+  eq: DateTime
+
+  """
+  Filter records with a value that's outside the specified minute range. Seconds and milliseconds are truncated from the argument.
+  """
+  neq: DateTime
+
+  """
+  Filter records with the specified field defined (i.e. with any value) or not
+  """
+  exists: BooleanType
 }
 
 scalar CustomData
@@ -446,6 +516,118 @@ type GlobalSeoField {
   siteName: String
   titleSuffix: String
   twitterAccount: String
+}
+
+"""Block of type 🚀 Hero section (hero_section)"""
+type HeroSectionRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  buttons: [ButtonRecord!]!
+  displayOptions: String!
+  heroImage: FileField
+  heroSubtitle(
+    """Process content as markdown"""
+    markdown: Boolean
+  ): String
+  heroTitle: String!
+  id: ItemId!
+}
+
+type HeroSectionRecordListListNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: [HeroSectionRecord!]!
+}
+
+"""Record of type 📝 Home (home)"""
+type HomeRecord implements RecordInterface {
+  _allSeoLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [SeoFieldMultiLocaleField!]
+  _allSubtitleLocales(
+    """Process content as markdown"""
+    markdown: Boolean
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StringMultiLocaleField!]
+  _allTitleLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StringNonNullMultiLocaleField!]
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _locales: [SiteLocale!]!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  id: ItemId!
+  sections: [HeroSectionRecord!]!
+  seo(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): SeoField
+  subtitle(
+    """Process content as markdown"""
+    markdown: Boolean
+
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String
+  title(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String!
 }
 
 """Block of type 🌅 Image (image_block)"""
@@ -2574,6 +2756,21 @@ scalar IntType
 
 scalar ItemId
 
+"""Specifies how to filter by ID"""
+input ItemIdFilter {
+  """Search the record with the specified ID"""
+  eq: ItemId
+
+  """Exclude the record with the specified ID"""
+  neq: ItemId
+
+  """Search records with the specified IDs"""
+  in: [ItemId]
+
+  """Search records that do not have the specified IDs"""
+  notIn: [ItemId]
+}
+
 enum ItemStatus {
   draft
   updated
@@ -2581,6 +2778,20 @@ enum ItemStatus {
 }
 
 scalar JsonField
+
+"""Specifies how to filter by locale"""
+input LocalesFilter {
+  """Filter records that are localized in all the specified locales"""
+  allIn: [SiteLocale!]
+
+  """
+  Filter records that are localized in at least one of the specified locales
+  """
+  anyIn: [SiteLocale!]
+
+  """Filter records that are not localized in any of the specified locales"""
+  notIn: [SiteLocale!]
+}
 
 """Block of type 🔽 Menu Dropdown (menu_dropdown)"""
 type MenuDropdownRecord implements RecordInterface {
@@ -2674,23 +2885,101 @@ input OrientationFilter {
   neq: UploadOrientation
 }
 
+input PageModelFilter {
+  _createdAt: CreatedAtFilter
+  id: ItemIdFilter
+  _firstPublishedAt: PublishedAtFilter
+  _publicationScheduledAt: PublishedAtFilter
+  _unpublishingScheduledAt: PublishedAtFilter
+  _publishedAt: PublishedAtFilter
+  _status: StatusFilter
+  _updatedAt: UpdatedAtFilter
+  _isValid: BooleanFilter
+  _locales: LocalesFilter
+  seoSettingsSocial: SeoFilter
+  slug: SlugFilter
+  structuredText: StructuredTextFilter
+  title: StringFilter
+  OR: [PageModelFilter]
+  AND: [PageModelFilter]
+}
+
+enum PageModelOrderBy {
+  _createdAt_ASC
+  _createdAt_DESC
+  id_ASC
+  id_DESC
+  _firstPublishedAt_ASC
+  _firstPublishedAt_DESC
+  _publicationScheduledAt_ASC
+  _publicationScheduledAt_DESC
+  _unpublishingScheduledAt_ASC
+  _unpublishingScheduledAt_DESC
+  _publishedAt_ASC
+  _publishedAt_DESC
+  _status_ASC
+  _status_DESC
+  _updatedAt_ASC
+  _updatedAt_DESC
+  _isValid_ASC
+  _isValid_DESC
+  title_ASC
+  title_DESC
+}
+
 union PageModelStructuredTextBlocksField = ImageBlockRecord | ImageGalleryBlockRecord | VideoBlockRecord
 
 type PageModelStructuredTextField {
   blocks: [PageModelStructuredTextBlocksField!]!
   inlineBlocks: [String!]!
-  links: [PageRecord!]!
+  links: [HomeRecord!]!
   value: JsonField!
+}
+
+type PageModelStructuredTextFieldNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: PageModelStructuredTextField!
 }
 
 """Record of type 📝 Page (page)"""
 type PageRecord implements RecordInterface {
+  _allSectionsLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [HeroSectionRecordListListNonNullMultiLocaleField!]
+  _allSeoSettingsSocialLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [SeoFieldMultiLocaleField!]
+  _allSlugLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StringNonNullMultiLocaleField!]
+  _allStructuredTextLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [PageModelStructuredTextFieldNonNullMultiLocaleField!]
+  _allTitleLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StringNonNullMultiLocaleField!]
   _createdAt: DateTime!
 
   """Editing URL"""
   _editingUrl: String
   _firstPublishedAt: DateTime!
   _isValid: BooleanType!
+  _locales: [SiteLocale!]!
   _modelApiKey: String!
   _publicationScheduledAt: DateTime
   _publishedAt: DateTime!
@@ -2704,14 +2993,100 @@ type PageRecord implements RecordInterface {
   _unpublishingScheduledAt: DateTime
   _updatedAt: DateTime!
   id: ItemId!
-  seoAnalysis: JsonField
-  seoSettingsSocial: SeoField
-  structuredText: PageModelStructuredTextField!
-  title: String!
+  sections(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [HeroSectionRecord!]!
+  seoSettingsSocial(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): SeoField
+  slug(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String!
+  structuredText(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): PageModelStructuredTextField!
+  title(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String!
+}
+
+"""Specifies how to filter by publication datetime"""
+input PublishedAtFilter {
+  """
+  Filter records with a value that's strictly greater than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  gt: DateTime
+
+  """
+  Filter records with a value that's less than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  lt: DateTime
+
+  """
+  Filter records with a value that's greater than or equal to than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  gte: DateTime
+
+  """
+  Filter records with a value that's less or equal than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  lte: DateTime
+
+  """
+  Filter records with a value that's within the specified minute range. Seconds and milliseconds are truncated from the argument.
+  """
+  eq: DateTime
+
+  """
+  Filter records with a value that's outside the specified minute range. Seconds and milliseconds are truncated from the argument.
+  """
+  neq: DateTime
+
+  """
+  Filter records with the specified field defined (i.e. with any value) or not
+  """
+  exists: BooleanType
 }
 
 """The query root for this schema"""
 type Query {
+  """Returns meta information regarding a record collection"""
+  _allPagesMeta(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+    filter: PageModelFilter
+  ): CollectionMetadata!
+
   """Returns meta information regarding an assets collection"""
   _allUploadsMeta(
     """The locale to use to fetch the field's content"""
@@ -2741,6 +3116,25 @@ type Query {
     fallbackLocales: [SiteLocale!]
   ): AdminRecord
 
+  """Returns a collection of records"""
+  allPages(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+
+    """Skip the first results"""
+    skip: IntType
+
+    """Limit the number of results"""
+    first: IntType = 20
+    filter: PageModelFilter
+    orderBy: [PageModelOrderBy] = [_updatedAt_DESC]
+  ): [PageRecord!]!
+
   """Returns a collection of assets"""
   allUploads(
     """The locale to use to fetch the field's content"""
@@ -2761,6 +3155,17 @@ type Query {
   ): [FileField!]!
 
   """Returns the single instance record"""
+  home(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): HomeRecord
+
+  """Returns a specific record"""
   page(
     """The locale to use to fetch the field's content"""
     locale: SiteLocale
@@ -2769,6 +3174,8 @@ type Query {
     If you want to fallback to a default translation when a translation has not been found
     """
     fallbackLocales: [SiteLocale!]
+    filter: PageModelFilter
+    orderBy: [PageModelOrderBy] = [_updatedAt_DESC]
   ): PageRecord
 
   """Returns a specific asset"""
@@ -2851,6 +3258,19 @@ type SeoField {
   twitterCard: String
 }
 
+type SeoFieldMultiLocaleField {
+  locale: SiteLocale
+  value: SeoField
+}
+
+"""Specifies how to filter SEO meta tags fields"""
+input SeoFilter {
+  """
+  Filter records with the specified field defined (i.e. with any value) or not
+  """
+  exists: BooleanType
+}
+
 type Site {
   favicon: FileField
   faviconMetaTags(
@@ -2873,6 +3293,21 @@ type Site {
 enum SiteLocale {
   en
   it
+}
+
+"""Specifies how to filter Slug fields"""
+input SlugFilter {
+  """Search for records with an exact match"""
+  eq: String
+
+  """Exclude records with an exact match"""
+  neq: String
+
+  """Filter records that have one of the specified slugs"""
+  in: [String]
+
+  """Filter records that do have one of the specified slugs"""
+  notIn: [String]
 }
 
 """Block of type 🐦 Social Link (social_link)"""
@@ -2900,10 +3335,95 @@ type SocialLinkRecord implements RecordInterface {
   url: String!
 }
 
+"""Specifies how to filter by status"""
+input StatusFilter {
+  """Search the record with the specified status"""
+  eq: ItemStatus
+
+  """Exclude the record with the specified status"""
+  neq: ItemStatus
+
+  """Search records with the specified statuses"""
+  in: [ItemStatus]
+
+  """Search records without the specified statuses"""
+  notIn: [ItemStatus]
+}
+
+"""Specifies how to filter Single-line string fields"""
+input StringFilter {
+  """Filter records based on a regular expression"""
+  matches: StringMatchesFilter
+
+  """Exclude records based on a regular expression"""
+  notMatches: StringMatchesFilter
+
+  """
+  Filter records with the specified field set as blank (null or empty string)
+  """
+  isBlank: BooleanType
+
+  """
+  Filter records with the specified field present (neither null, nor empty string)
+  """
+  isPresent: BooleanType
+
+  """Search for records with an exact match"""
+  eq: String
+
+  """Exclude records with an exact match"""
+  neq: String
+
+  """Filter records that equal one of the specified values"""
+  in: [String]
+
+  """Filter records that do not equal one of the specified values"""
+  notIn: [String]
+
+  """
+  Filter records with the specified field defined (i.e. with any value) or not [DEPRECATED]
+  """
+  exists: BooleanType
+}
+
 input StringMatchesFilter {
   pattern: String!
   caseSensitive: BooleanType = false
   regexp: BooleanType = true
+}
+
+type StringMultiLocaleField {
+  locale: SiteLocale
+  value: String
+}
+
+type StringNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: String!
+}
+
+"""Specifies how to filter Structured Text fields values"""
+input StructuredTextFilter {
+  """Filter records based on a regular expression"""
+  matches: StringMatchesFilter
+
+  """Exclude records based on a regular expression"""
+  notMatches: StringMatchesFilter
+
+  """
+  Filter records with the specified field set as blank (null or single empty paragraph)
+  """
+  isBlank: BooleanType
+
+  """
+  Filter records with the specified field present (neither null, nor empty string)
+  """
+  isPresent: BooleanType
+
+  """
+  Filter records with the specified field defined (i.e. with any value) or not [DEPRECATED]
+  """
+  exists: BooleanType
 }
 
 type Tag {
@@ -2925,6 +3445,44 @@ input TypeFilter {
 
   """Search uploads without the specified types"""
   notIn: [UploadType]
+}
+
+"""Specifies how to filter by update datetime"""
+input UpdatedAtFilter {
+  """
+  Filter records with a value that's strictly greater than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  gt: DateTime
+
+  """
+  Filter records with a value that's less than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  lt: DateTime
+
+  """
+  Filter records with a value that's greater than or equal to than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  gte: DateTime
+
+  """
+  Filter records with a value that's less or equal than the one specified. Seconds and milliseconds are truncated from the argument.
+  """
+  lte: DateTime
+
+  """
+  Filter records with a value that's within the specified minute range. Seconds and milliseconds are truncated from the argument.
+  """
+  eq: DateTime
+
+  """
+  Filter records with a value that's outside the specified minute range. Seconds and milliseconds are truncated from the argument.
+  """
+  neq: DateTime
+
+  """
+  Filter records with the specified field defined (i.e. with any value) or not
+  """
+  exists: BooleanType
 }
 
 """Specifies how to filter by default alt"""

@@ -1,29 +1,11 @@
 ---
+import { executeQuery } from '~/lib/datocms/executeQuery';
 import { graphql } from '~/lib/datocms/graphql';
 import Layout from '../layouts/Layout.astro';
-import { TagFragment } from '~/lib/datocms/commonFragments';
-import { executeQuery } from '~/lib/datocms/executeQuery';
-import { StructuredText } from '@datocms/astro';
 
-import { HeadingWithAnchorLink } from '~/components/HeadingWithAnchorLink';
-
-import { isDraftModeEnabled } from '~/lib/draftMode';
 import { DraftModeQueryListener } from '~/components/DraftModeQueryListener';
-
-import { PageInline } from '~/components/inlineRecord/PageInline';
-import { PageInlineFragment } from '~/components/inlineRecord/PageInline/fragments';
-
-import { PageLink } from '~/components/linkToRecord/PageLink';
-import { PageLinkFragment } from '~/components/linkToRecord/PageLink/fragments';
-
-import { VideoBlock } from '~/components/blocks/VideoBlock';
-import { VideoBlockFragment } from '~/components/blocks/VideoBlock/fragments';
-
-import { ImageBlock } from '~/components/blocks/ImageBlock';
-import { ImageBlockFragment } from '~/components/blocks/ImageBlock/fragments';
-
-import { ImageGalleryBlock } from '~/components/blocks/ImageGalleryBlock';
-import { ImageGalleryBlockFragment } from '~/components/blocks/ImageGalleryBlock/fragments';
+import { TagFragment } from '~/lib/datocms/commonFragments';
+import { isDraftModeEnabled } from '~/lib/draftMode';
 
 /**
  * The GraphQL query that will be executed for this route to generate the page
@@ -32,8 +14,9 @@ import { ImageGalleryBlockFragment } from '~/components/blocks/ImageGalleryBlock
  * Thanks to gql.tada, the result will be fully typed!
  */
 
- const { locale } = Astro.params;
-const query = graphql(`
+const { locale } = Astro.params;
+const query = graphql(
+  `
     query HomePageQuery($locale: SiteLocale = en) {
       home(locale: $locale) {
         id
@@ -55,7 +38,6 @@ const { home } = await executeQuery(query, {
   variables: { locale },
 });
 
-
 const draftModeEnabled = isDraftModeEnabled(Astro.cookies);
 const { page } = await executeQuery(query, { includeDrafts: draftModeEnabled });
 
@@ -67,8 +49,12 @@ if (!home) {
 }
 ---
 
-<Layout additionalSeo={home._seoMetaTags}>
-  <h1>{home.title}</h1>
+<Layout additionalSeo={home.seo}>
+  <div class="hero bg-base-200">
+    <div class="max-w-md">
+      <h1 class="text-5xl font-bold">{home.title}</h1>
+    </div>
+  </div>
   <footer>Published at {home._publishedAt}</footer>
 
   <DraftModeQueryListener query={query} />
