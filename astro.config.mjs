@@ -3,7 +3,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import netlify from '@astrojs/netlify';
 
-
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
