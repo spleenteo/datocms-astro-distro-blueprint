@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SECRET_API_TOKEN } from 'astro:env/server';
-import { enableDraftMode } from '~/lib/draftMode';
+import { enableDraftMode } from '@lib/draftMode';
 import { handleUnexpectedError, invalidRequestResponse, isRelativeUrl } from '../../utils';
 
 /**

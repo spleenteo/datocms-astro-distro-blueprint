@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { disableDraftMode } from '~/lib/draftMode';
+import { disableDraftMode } from '@lib/draftMode';
 import { handleUnexpectedError, invalidRequestResponse, isRelativeUrl } from '../../utils';
 
 /**
