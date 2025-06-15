@@ -47,7 +47,7 @@ const { links, socialLinks, footNote, secondaryLinks, logo } = footerData;
       )
     }
     <div>
-      <div class="text-sm opacity-60" set:html={footNote.content} />
+      <div class="text-sm opacity-60" set:html={footNote} />
       {
         secondaryLinks.length > 0 && (
           <div class="text-sm flex gap-2 mt-2">

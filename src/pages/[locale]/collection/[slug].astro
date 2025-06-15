@@ -1,74 +1,27 @@
 ---
-import { executeQuery } from '~/lib/datocms/executeQuery';
-import { query } from './_graphql';
-import { getAllPageSlugsQuery } from './_getStaticPaths';
-import { getCurrentLocale, getFallbackLocale, isValidLocale } from '~/lib/i18n';
 import Layout from '~/layouts/Layout.astro';
 
-export async function getStaticPaths() {
-  const locales = await import('~/lib/i18n').then((m) => m.default());
+import { query } from './_graphql';
+import { executeQuery } from '~/lib/datocms/executeQuery';
 
-  // Generate paths for all locale/slug combinations
-  const paths = [];
-  for (const locale of locales) {
-    try {
-      const { allPages } = await executeQuery(getAllPageSlugsQuery);
-
-      if (allPages && allPages.length > 0) {
-        for (const page of allPages) {
-          paths.push({
-            params: { locale, slug: page.slug },
-          });
-        }
-      }
-    } catch (error) {
-      console.warn(`No pages found for locale ${locale}:`, error);
-    }
-  }
-
-  // If no pages found, return at least one path to prevent build error
-  if (paths.length === 0) {
-    return locales.map((locale: string) => ({
-      params: { locale, slug: 'placeholder' },
-    }));
-  }
-
-  return paths;
-}
+import { getCurrentLocale, getFallbackLocale, isValidLocale } from '~/lib/i18n';
 
 // Get and validate current locale
 const { locale, slug } = Astro.params;
 const defaultLocale = await getFallbackLocale();
 
-// Validate the locale
-if (locale) {
-  const isValid = await isValidLocale(locale);
-  if (!isValid) {
-    return new Response(null, {
-      status: 404,
-      statusText: 'Locale not found',
-    });
-  }
+// Check if locale is valid, return 404 if not
+if (locale && !(await isValidLocale(locale))) {
+  return Astro.redirect('/404');
 }
 
-// If this is a placeholder page, show 404
-if (slug === 'placeholder') {
-  return new Response(null, {
-    status: 404,
-    statusText: 'Page not found',
-  });
-}
+// Use validated locale for GraphQL query
+const validLocale = locale || defaultLocale;
 
-let page = null;
-try {
-  const result = await executeQuery(query, {
-    includeDrafts: false,
-    variables: { slug, locale },
-  });
-  page = result.page;
-} catch (error) {
-  console.warn('Error fetching page:', error);
-}
+const { page } = await executeQuery(query, {
+  includeDrafts: false,
+  variables: { slug, locale: validLocale },
+});
 
 if (!page) {
   return new Response(null, {

@@ -1,93 +1,10 @@
-import { graphql } from './datocms/graphql';
-import { executeQuery } from './datocms/executeQuery';
-import getAvailableLocales, { getFallbackLocale } from './i18n';
-
-// GraphQL query for navigation menu from DatoCMS
-const NAVIGATION_QUERY = graphql(`
-  query NavigationQuery {
-    admin {
-      logo {
-        url
-        alt
-        title
-      }
-      calloutBackground {
-        hex
-      }
-      calloutText
-      navLinks {
-        ... on MenuDropdownRecord {
-          __typename
-          staticLabel
-          pages {
-            label
-            page {
-              slug
-              title
-            }
-          }
-        }
-        ... on MenuExternalItemRecord {
-          __typename
-          label
-          url
-        }
-        ... on MenuItemRecord {
-          __typename
-          label
-          page {
-            slug
-            title
-          }
-        }
-      }
-    }
-  }
-`);
-
-// GraphQL query for footer data from DatoCMS
-const FOOTER_QUERY = graphql(`
-  query FooterQuery {
-    admin {
-      logo {
-        url
-        alt
-        title
-      }
-      footerLinks {
-        navLinks {
-          ... on MenuExternalItemRecord {
-            __typename
-            label
-            url
-          }
-          ... on MenuItemRecord {
-            __typename
-            label
-            page {
-              slug
-            }
-          }
-        }
-        widgetLabel
-      }
-      legalText {
-        value
-      }
-      socialLinks {
-        platform
-        url
-      }
-    }
-  }
-`);
+import { executeQuery } from '~/lib/datocms/executeQuery';
+import { SITE_LAYOUT_QUERY } from './datocms/commonFragments';
+import { getFallbackLocale } from '~/lib/i18n';
 
 // Route mapping configuration
 export const ROUTE_MAPPING = {
-  Page: '/collection',
-  // Add more model mappings as needed
-  // 'BlogPost': '/blog',
-  // 'Product': '/products',
+  Page: 'collection',
 } as const;
 
 // Social platform to icon mapping
@@ -108,157 +25,207 @@ export const SOCIAL_ICON_MAPPING = {
 
 type ModelType = keyof typeof ROUTE_MAPPING;
 
-// Function to build localized URLs
-export function buildLocalizedUrl(
-  slug: string,
-  modelType: ModelType,
-  locale: string,
-  defaultLocale: string,
-) {
+// Simple function to build URLs with locale
+export function buildUrl(slug: string, modelType: ModelType, locale: string) {
   const basePath = ROUTE_MAPPING[modelType];
-  // With prefixDefaultLocale: true, all locales need prefixes
-  return `/${locale}${basePath}/${slug}`;
+  return `/${locale}/${basePath}/${slug}`;
 }
 
-// Function to transform DatoCMS navigation data to Header component format
-export async function transformNavigationData(navData: any, currentLocale?: string) {
-  const defaultLocale = await getFallbackLocale();
-  const locale = currentLocale || defaultLocale;
+// Transform navigation items into a simple format
+function transformNavItem(item: any, locale: string) {
+  switch (item.__typename) {
+    case 'MenuDropdownRecord':
+      return {
+        text: item.staticLabel,
+        links: item.pages
+          .filter((pageItem: any) => pageItem.page && pageItem.page.slug)
+          .map((pageItem: any) => ({
+            text: pageItem.label || pageItem.page.title,
+            href: buildUrl(pageItem.page.slug, 'Page', locale),
+          })),
+      };
 
-  return navData.admin.navLinks
-    .map((item: any) => {
-      switch (item.__typename) {
-        case 'MenuDropdownRecord':
-          return {
-            text: item.staticLabel,
-            links: item.pages.map((pageItem: any) => ({
-              text: pageItem.label || pageItem.page.title,
-              href: buildLocalizedUrl(pageItem.page.slug, 'Page', locale, defaultLocale),
-            })),
-          };
+    case 'MenuExternalItemRecord':
+      return {
+        text: item.label,
+        href: item.url,
+      };
 
-        case 'MenuExternalItemRecord':
-          return {
-            text: item.label,
-            href: item.url,
-          };
-
-        case 'MenuItemRecord':
-          return {
-            text: item.label,
-            href: buildLocalizedUrl(item.page.slug, 'Page', locale, defaultLocale),
-          };
-
-        default:
-          console.warn('Unknown menu item type:', item.__typename);
-          return null;
+    case 'MenuItemRecord':
+      // Skip items without a page or slug
+      if (!item.page || !item.page.slug) {
+        return null;
       }
-    })
-    .filter(Boolean);
+      return {
+        text: item.label,
+        href: buildUrl(item.page.slug, 'Page', locale),
+      };
+
+    default:
+      return null;
+  }
 }
 
-// Function to transform footer data from DatoCMS
-export async function transformFooterData(footerData: any, currentLocale?: string) {
+// Transform footer link item
+function transformFooterLink(item: any, locale: string) {
+  switch (item.__typename) {
+    case 'MenuExternalItemRecord':
+      return {
+        text: item.label,
+        href: item.url,
+      };
+
+    case 'MenuItemRecord':
+      // Skip items without a page or slug
+      if (!item.page || !item.page.slug) {
+        return null;
+      }
+      return {
+        text: item.label,
+        href: buildUrl(item.page.slug, 'Page', locale),
+      };
+
+    default:
+      return null;
+  }
+}
+
+// Cache for site layout data
+let siteLayoutCache: { locale: string; data: any } | null = null;
+
+// Get all site layout data (navigation + footer) with a single query
+async function getSiteLayoutData(locale?: string) {
   const defaultLocale = await getFallbackLocale();
-  const locale = currentLocale || defaultLocale;
+  const validLocale = locale || defaultLocale;
 
-  // Transform footer links into columns
-  const links = footerData.admin.footerLinks.map((column: any) => ({
-    title: column.widgetLabel,
-    links: column.navLinks
-      .map((item: any) => {
-        switch (item.__typename) {
-          case 'MenuExternalItemRecord':
-            return {
-              text: item.label,
-              href: item.url,
-            };
-          case 'MenuItemRecord':
-            return {
-              text: item.label,
-              href: buildLocalizedUrl(item.page.slug, 'Page', locale, defaultLocale),
-            };
-          default:
-            return null;
-        }
-      })
-      .filter(Boolean),
-  }));
+  // Check cache
+  if (siteLayoutCache && siteLayoutCache.locale === validLocale) {
+    return siteLayoutCache.data;
+  }
 
-  // Transform social links
-  const socialLinks = footerData.admin.socialLinks.map((social: any) => {
-    const platform = social.platform.toLowerCase();
-    const icon = SOCIAL_ICON_MAPPING[platform as keyof typeof SOCIAL_ICON_MAPPING];
+  try {
+    const result = await executeQuery(SITE_LAYOUT_QUERY, {
+      variables: { locale: validLocale as any },
+      includeDrafts: false,
+    });
 
-    return {
-      ariaLabel: social.platform,
-      href: social.url,
-      icon: icon || 'tabler:external-link',
-    };
-  });
+    const admin = result?.admin;
+    if (!admin) {
+      return null;
+    }
 
-  // Get legal text
-  const footNote = footerData.admin.legalText?.value || '';
+    // Cache the result
+    siteLayoutCache = { locale: validLocale, data: admin };
+    return admin;
+  } catch (error: any) {
+    // Check if we have partial data in the error response
+    if (error.response?.body?.data?.admin) {
+      const admin = error.response.body.data.admin;
+      // Cache the partial result
+      siteLayoutCache = { locale: validLocale, data: admin };
+      return admin;
+    }
 
-  return {
-    links,
-    socialLinks,
-    footNote,
-    secondaryLinks: [], // We can add this later if needed
-  };
+    console.error('Error fetching site layout data:', error.message);
+    return null;
+  }
 }
 
-// Main function to get navigation data
-export async function getNavigationData(currentLocale?: string) {
+// Get navigation data using the combined query
+export async function getNavigationData(locale?: string) {
   try {
-    const result = await executeQuery(NAVIGATION_QUERY);
-    const navigationData = await transformNavigationData(result, currentLocale);
+    const defaultLocale = await getFallbackLocale();
+    const validLocale = locale || defaultLocale;
+    const admin = await getSiteLayoutData(validLocale);
+
+    if (!admin) {
+      return {
+        links: [],
+        logo: null,
+        callout: { text: '', backgroundColor: '#000000' },
+      };
+    }
+
+    const links = admin.navLinks
+      .map((item: any) => transformNavItem(item, validLocale))
+      .filter(Boolean);
+
     return {
-      links: navigationData,
-      logo: result.admin.logo
+      links,
+      logo: admin.logo
         ? {
-            url: result.admin.logo.url,
-            alt: result.admin.logo.alt,
-            title: result.admin.logo.title,
+            url: admin.logo.url,
+            alt: admin.logo.alt,
+            title: admin.logo.title,
           }
         : null,
       callout: {
-        text: result.admin.calloutText || '',
-        backgroundColor: result.admin.calloutBackground?.hex || '#000000',
+        text: admin.calloutText || '',
+        backgroundColor: admin.calloutBackground?.hex || '#000000',
       },
     };
   } catch (error) {
-    console.error('Error fetching navigation data from DatoCMS:', error);
-    // Fallback to empty navigation
+    // console.error('Error processing navigation data:', error);
     return {
       links: [],
       logo: null,
-      callout: {
-        text: '',
-        backgroundColor: '#000000',
-      },
+      callout: { text: '', backgroundColor: '#000000' },
     };
   }
 }
 
-// Main function to get footer data
-export async function getFooterData(currentLocale?: string) {
+// Get footer data using the combined query
+export async function getFooterData(locale?: string) {
   try {
-    const result = await executeQuery(FOOTER_QUERY);
-    const footerData = await transformFooterData(result, currentLocale);
+    const defaultLocale = await getFallbackLocale();
+    const validLocale = locale || defaultLocale;
+    const admin = await getSiteLayoutData(validLocale);
+
+    if (!admin) {
+      return {
+        links: [],
+        socialLinks: [],
+        footNote: '',
+        secondaryLinks: [],
+        logo: null,
+      };
+    }
+
+    // Transform footer links into columns
+    const links = admin.footerLinks.map((column: any) => ({
+      title: column.widgetLabel,
+      links: column.navLinks
+        .map((item: any) => transformFooterLink(item, validLocale))
+        .filter(Boolean),
+    }));
+
+    // Transform social links
+    const socialLinks = admin.socialLinks.map((social: any) => {
+      const platform = social.platform.toLowerCase();
+      const icon = SOCIAL_ICON_MAPPING[platform as keyof typeof SOCIAL_ICON_MAPPING];
+
+      return {
+        ariaLabel: social.platform,
+        href: social.url,
+        icon: icon || 'tabler:external-link',
+      };
+    });
+
     return {
-      ...footerData,
-      logo: result.admin.logo
+      links,
+      socialLinks,
+      footNote: admin.legalText?.value || '',
+      secondaryLinks: [],
+      logo: admin.logo
         ? {
-            url: result.admin.logo.url,
-            alt: result.admin.logo.alt,
-            title: result.admin.logo.title,
+            url: admin.logo.url,
+            alt: admin.logo.alt,
+            title: admin.logo.title,
           }
         : null,
     };
   } catch (error) {
-    console.error('Error fetching footer data from DatoCMS:', error);
-    // Fallback to empty footer
+    // console.error('Error processing footer data:', error);
     return {
       links: [],
       socialLinks: [],

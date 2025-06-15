@@ -18,15 +18,18 @@ const { links: propsLinks } = Astro.props;
 
 // Get current locale from URL for navigation
 const currentLocale = await getLocaleFromUrl(Astro.url);
+
+// const currentLocale = await getLocaleFromUrl(Astro.url);
 const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
 
 // Get available locales for mobile menu
 const availableLocales = await import('~/lib/i18n').then((m) => m.default());
 const navigationData = await getNavigationData(currentLocale);
+
 const links = navigationData.links.length > 0 ? navigationData.links : propsLinks || [];
 ---
 
-<div id="daisy" class="navbar bg-base-100 shadow-sm">
+<div class="navbar bg-base-100 shadow-sm">
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -140,12 +143,7 @@ const links = navigationData.links.length > 0 ? navigationData.links : propsLink
         {
           availableLocales.map((locale: string) => (
             <li>
-              <a
-                href={Astro.url.pathname
-                  .replace(`/${currentLocale}/`, `/${locale}/`)
-                  .replace(`/${currentLocale}`, `/${locale}`)}
-                class={locale === currentLocale ? 'active' : ''}
-              >
+              <a href={`/${locale}/`} class={locale === currentLocale ? 'active' : ''}>
                 {locale.toUpperCase()}
               </a>
             </li>
