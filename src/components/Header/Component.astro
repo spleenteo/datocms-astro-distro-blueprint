@@ -1,6 +1,6 @@
 ---
-import { getLocaleFromUrl } from '~/lib/i18n';
-import { getNavigationData } from '~/lib/navigation';
+import { locales, setLocale } from '@lib/i18n';
+import { getNavigationData } from '@lib/navigation';
 
 interface Link {
   text?: string;
@@ -16,14 +16,14 @@ function trimSlash(path: string) {
 
 const { links: propsLinks } = Astro.props;
 
-// Get current locale from URL for navigation
-const currentLocale = await getLocaleFromUrl(Astro.url);
+// Get current locale from URL params
+const currentLocale = Astro.params.locale || 'en';
+setLocale(currentLocale);
 
-// const currentLocale = await getLocaleFromUrl(Astro.url);
 const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
 
 // Get available locales for mobile menu
-const availableLocales = await import('~/lib/i18n').then((m) => m.default());
+const availableLocales = locales;
 const navigationData = await getNavigationData(currentLocale);
 
 const links = navigationData.links.length > 0 ? navigationData.links : propsLinks || [];

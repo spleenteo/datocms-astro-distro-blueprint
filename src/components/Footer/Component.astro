@@ -1,8 +1,6 @@
 ---
-import { getFooterData } from '~/lib/navigation';
-import { getLocaleFromUrl } from '~/lib/i18n';
-
-const currentLocale = await getLocaleFromUrl(Astro.url);
+import { getFooterData } from '@lib/navigation';
+const currentLocale = Astro.params.locale || 'en';
 
 const footerData = await getFooterData(currentLocale);
 const { links, socialLinks, footNote, secondaryLinks, logo } = footerData;
