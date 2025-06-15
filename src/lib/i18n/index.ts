@@ -6,6 +6,7 @@ import { locales as siteLocales } from '@lib/site.json';
 export const locales = siteLocales as SiteLocale[];
 export const defaultLocale = locales[0];
 export const cookieName = 'HEAD_START_LOCALE';
+export type { SiteLocale, TranslationKey };
 
 const i18n = rosetta(messages);
 

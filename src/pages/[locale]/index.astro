@@ -6,10 +6,16 @@ import { graphql } from '@lib/datocms/graphql';
 import { DraftModeQueryListener } from '@components/DraftModeQueryListener';
 import { TagFragment } from '@lib/datocms/commonFragments';
 import { isDraftModeEnabled } from '@lib/draftMode';
-import { setLocale, t } from '@lib/i18n';
+import { t, isLocale, defaultLocale, type SiteLocale } from '@lib/i18n';
 
 const { locale } = Astro.params;
-setLocale(locale);
+
+// Redirect immediately if locale exists but is invalid
+if (locale && !isLocale(locale)) {
+  return Astro.redirect('/404');
+}
+const validLocale: SiteLocale = isLocale(locale) ? locale : defaultLocale;
+
 const query = graphql(
   `
     query HomePageQuery($locale: SiteLocale = en) {
@@ -30,7 +36,7 @@ const query = graphql(
 
 const { home } = await executeQuery(query, {
   includeDrafts: false,
-  variables: { locale },
+  variables: { locale: validLocale },
 });
 
 const draftModeEnabled = isDraftModeEnabled(Astro.cookies);
