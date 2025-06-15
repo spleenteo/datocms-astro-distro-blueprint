@@ -1,17 +1,15 @@
 ---
-import Layout from '~/layouts/Layout.astro';
+import Layout from '@layouts/Layout.astro';
 
 import { query } from './_graphql';
-import { executeQuery } from '~/lib/datocms/executeQuery';
+import { executeQuery } from '@lib/datocms/executeQuery';
 
-import { getCurrentLocale, getFallbackLocale, isValidLocale } from '~/lib/i18n';
+import { defaultLocale, isLocale } from '@lib/i18n';
 
 // Get and validate current locale
 const { locale, slug } = Astro.params;
-const defaultLocale = await getFallbackLocale();
-
 // Check if locale is valid, return 404 if not
-if (locale && !(await isValidLocale(locale))) {
+if (locale && !isLocale(locale)) {
   return Astro.redirect('/404');
 }
 

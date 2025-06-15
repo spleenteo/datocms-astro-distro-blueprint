@@ -1,4 +1,4 @@
-import { graphql } from '~/lib/datocms/graphql';
+import { graphql } from '@lib/datocms/graphql';
 
 // Query for the specific page
 export const query = graphql(/* GraphQL */ `
