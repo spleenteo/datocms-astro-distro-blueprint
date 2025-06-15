@@ -1,29 +1,29 @@
 ---
-import { graphql } from '~/lib/datocms/graphql';
+import { graphql } from '@lib/datocms/graphql';
 import Layout from '../layouts/Layout.astro';
 import { TagFragment } from '~/lib/datocms/commonFragments';
 import { executeQuery } from '~/lib/datocms/executeQuery';
 import { StructuredText } from '@datocms/astro';
 
-import { HeadingWithAnchorLink } from '~/components/HeadingWithAnchorLink';
+import { HeadingWithAnchorLink } from '@components/HeadingWithAnchorLink';
 
 import { isDraftModeEnabled } from '@lib/draftMode';
-import { DraftModeQueryListener } from '~/components/DraftModeQueryListener';
+import { DraftModeQueryListener } from '@components/DraftModeQueryListener';
 
-import { PageInline } from '~/components/inlineRecord/PageInline';
-import { PageInlineFragment } from '~/components/inlineRecord/PageInline/fragments';
+import { PageInline } from '@components/inlineRecord/PageInline';
+import { PageInlineFragment } from '@components/inlineRecord/PageInline/fragments';
 
-import { PageLink } from '~/components/linkToRecord/PageLink';
-import { PageLinkFragment } from '~/components/linkToRecord/PageLink/fragments';
+import { PageLink } from '@components/linkToRecord/PageLink';
+import { PageLinkFragment } from '@components/linkToRecord/PageLink/fragments';
 
-import { VideoBlock } from '~/components/blocks/VideoBlock';
-import { VideoBlockFragment } from '~/components/blocks/VideoBlock/fragments';
+import { VideoBlock } from '@components/blocks/VideoBlock';
+import { VideoBlockFragment } from '@components/blocks/VideoBlock/fragments';
 
-import { ImageBlock } from '~/components/blocks/ImageBlock';
-import { ImageBlockFragment } from '~/components/blocks/ImageBlock/fragments';
+import { ImageBlock } from '@components/blocks/ImageBlock';
+import { ImageBlockFragment } from '@components/blocks/ImageBlock/fragments';
 
-import { ImageGalleryBlock } from '~/components/blocks/ImageGalleryBlock';
-import { ImageGalleryBlockFragment } from '~/components/blocks/ImageGalleryBlock/fragments';
+import { ImageGalleryBlock } from '@components/blocks/ImageGalleryBlock';
+import { ImageGalleryBlockFragment } from '@components/blocks/ImageGalleryBlock/fragments';
 
 /**
  * The GraphQL query that will be executed for this route to generate the page

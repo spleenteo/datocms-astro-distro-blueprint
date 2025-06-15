@@ -1,4 +1,4 @@
-import { graphql } from '~/lib/datocms/graphql';
+import { graphql } from '@lib/datocms/graphql';
 
 /**
  * Let's define the GraphQL fragment needed for the component to function.

@@ -1,5 +1,5 @@
-import { ResponsiveImageFragment } from '~/components/ResponsiveImage/fragments';
-import { graphql } from '~/lib/datocms/graphql';
+import { ResponsiveImageFragment } from '@components/ResponsiveImage/fragments';
+import { graphql } from '@lib/datocms/graphql';
 
 /**
  * Let's define the GraphQL fragment needed for the component to function.

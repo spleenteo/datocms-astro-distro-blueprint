@@ -1,5 +1,5 @@
 import { graphql } from 'gql.tada';
-import { VideoPlayerFragment } from '~/components/VideoPlayer/fragments';
+import { VideoPlayerFragment } from '@components/VideoPlayer/fragments';
 
 /**
  * Let's define the GraphQL fragment needed for the component to function.
