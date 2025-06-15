@@ -8,7 +8,7 @@
       "@lib/*": ["src/lib/*"],
       "@pages/*": ["src/pages/*"],
       "@root/*": ["./*"],
-      "@middleware/*": ["src/middleware/*"],
+      "@middleware/*": ["src/middleware/*"]
     },
     "plugins": [
       {
