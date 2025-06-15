@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SECRET_API_TOKEN } from 'astro:env/server';
-import { recordToWebsiteRoute } from '~/lib/datocms/recordInfo';
+import { recordToWebsiteRoute } from '@lib/datocms/recordInfo';
 import { handleUnexpectedError, invalidRequestResponse, json, withCORS } from '../utils';
 
 export const OPTIONS: APIRoute = ({ request }) => {

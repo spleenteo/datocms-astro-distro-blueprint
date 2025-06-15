@@ -4,21 +4,22 @@ import Layout from '@layouts/Layout.astro';
 import { query } from './_graphql';
 import { executeQuery } from '@lib/datocms/executeQuery';
 
-import { defaultLocale, isLocale } from '@lib/i18n';
+import { isLocale, defaultLocale, type SiteLocale } from '@lib/i18n';
 
 // Get and validate current locale
 const { locale, slug } = Astro.params;
-// Check if locale is valid, return 404 if not
+
+// Redirect immediately if locale exists but is invalid
 if (locale && !isLocale(locale)) {
   return Astro.redirect('/404');
 }
+const validLocale: SiteLocale = isLocale(locale) ? locale : defaultLocale;
 
 // Use validated locale for GraphQL query
-const validLocale = locale || defaultLocale;
 
 const { page } = await executeQuery(query, {
   includeDrafts: false,
-  variables: { slug, locale: validLocale },
+  variables: { slug: slug!, locale: validLocale },
 });
 
 if (!page) {

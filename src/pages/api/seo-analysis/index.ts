@@ -2,7 +2,7 @@ import { buildClient } from '@datocms/cma-client';
 import type { APIRoute } from 'astro';
 import { DATOCMS_CMA_TOKEN, SECRET_API_TOKEN } from 'astro:env/server';
 import { JSDOM } from 'jsdom';
-import { recordToSlug, recordToWebsiteRoute } from '~/lib/datocms/recordInfo';
+import { recordToSlug, recordToWebsiteRoute } from '@lib/datocms/recordInfo';
 import { draftModeHeaders } from '@lib/draftMode';
 import { handleUnexpectedError, invalidRequestResponse, json, withCORS } from '../utils';
 
