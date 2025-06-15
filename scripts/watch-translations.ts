@@ -25,11 +25,10 @@ function watchTranslations() {
   subscribeToQuery({
     query,
     fetcher: fetch,
-    // @ts-expect-error types are compatible
     eventSourceClass: EventSource,
     environment: datocmsEnvironment,
     token: process.env.DATOCMS_PUBLISHED_CONTENT_CDA_TOKEN!,
-    preview: true,
+    includeDrafts: true,
     onUpdate: () => {
       updates++;
       if (updates <= 1) {
