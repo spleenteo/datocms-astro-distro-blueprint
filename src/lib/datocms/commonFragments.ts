@@ -1,4 +1,4 @@
-import { graphql } from '~/lib/datocms/graphql';
+import { graphql } from '@lib/datocms/graphql';
 
 /*
  * This file lists a series of fragments not related to any specific Vue

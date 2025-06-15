@@ -1,6 +1,6 @@
-import { executeQuery } from '~/lib/datocms/executeQuery';
+import { executeQuery } from '@lib/datocms/executeQuery';
 import { SITE_LAYOUT_QUERY } from './datocms/commonFragments';
-import { getFallbackLocale } from '~/lib/i18n';
+import { defaultLocale } from '@lib/i18n';
 
 // Route mapping configuration
 export const ROUTE_MAPPING = {
@@ -95,7 +95,6 @@ let siteLayoutCache: { locale: string; data: any } | null = null;
 
 // Get all site layout data (navigation + footer) with a single query
 async function getSiteLayoutData(locale?: string) {
-  const defaultLocale = await getFallbackLocale();
   const validLocale = locale || defaultLocale;
 
   // Check cache
@@ -134,7 +133,6 @@ async function getSiteLayoutData(locale?: string) {
 // Get navigation data using the combined query
 export async function getNavigationData(locale?: string) {
   try {
-    const defaultLocale = await getFallbackLocale();
     const validLocale = locale || defaultLocale;
     const admin = await getSiteLayoutData(validLocale);
 
@@ -177,7 +175,6 @@ export async function getNavigationData(locale?: string) {
 // Get footer data using the combined query
 export async function getFooterData(locale?: string) {
   try {
-    const defaultLocale = await getFallbackLocale();
     const validLocale = locale || defaultLocale;
     const admin = await getSiteLayoutData(validLocale);
 

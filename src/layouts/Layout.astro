@@ -1,15 +1,15 @@
 ---
-import { TagFragment } from '~/lib/datocms/commonFragments';
-import { executeQuery } from '~/lib/datocms/executeQuery';
-import { graphql } from '~/lib/datocms/graphql';
-import { DraftModeToggler } from '~/components/DraftModeToggler';
+import { TagFragment } from '@lib/datocms/commonFragments';
+import { executeQuery } from '@lib/datocms/executeQuery';
+import { graphql } from '@lib/datocms/graphql';
+import { DraftModeToggler } from '@components/DraftModeToggler';
 import { Seo, type TitleMetaLinkTag } from '@datocms/astro';
-import { isDraftModeEnabled } from '~/lib/draftMode';
-import { getLocaleFromUrl, getFallbackLocale } from '~/lib/i18n';
-import '~/global.css';
+import { isDraftModeEnabled } from '@lib/draftMode';
+import { getLocaleFromUrl, getFallbackLocale } from '@lib/i18n';
+import '@root/src/global.css';
 
-import { Header } from '~/components/Header';
-import { Footer } from '~/components/Footer';
+import { Header } from '@components/Header';
+import { Footer } from '@components/Footer';
 
 type Props = {
   additionalSeo?: TitleMetaLinkTag[];
