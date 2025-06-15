@@ -94,7 +94,7 @@ function transformFooterLink(item: any, locale: string) {
 let siteLayoutCache: { locale: string; data: any } | null = null;
 
 // Get all site layout data (navigation + footer) with a single query
-async function getSiteLayoutData(locale?: string) {  
+async function getSiteLayoutData(locale?: string) {
   const validLocale = locale || defaultLocale;
 
   // Check cache
@@ -107,17 +107,16 @@ async function getSiteLayoutData(locale?: string) {
       variables: { locale: validLocale as any },
       includeDrafts: false,
     });
-    
+
     const admin = result?.admin;
     if (!admin) {
       return null;
     }
-    
+
     // Cache the result
     siteLayoutCache = { locale: validLocale, data: admin };
     return admin;
   } catch (error: any) {
-
     // Check if we have partial data in the error response
     if (error.response?.body?.data?.admin) {
       const admin = error.response.body.data.admin;
