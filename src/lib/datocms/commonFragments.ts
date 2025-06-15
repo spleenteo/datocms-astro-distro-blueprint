@@ -17,7 +17,7 @@ export const TagFragment = graphql(`
 export const SITE_LAYOUT_QUERY = graphql(`
   query SiteLayoutQuery($locale: SiteLocale = en) {
     admin(locale: $locale) {
-      logo{
+      logo {
         url
         alt
         title
