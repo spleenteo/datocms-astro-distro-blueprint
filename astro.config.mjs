@@ -5,7 +5,6 @@ import netlify from '@astrojs/netlify';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
-import { datocmsI18n } from './src/lib/i18n/astro-integration.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -61,5 +60,5 @@ export default defineConfig({
     },
     validateSecrets: true,
   },
-  integrations: [react(), datocmsI18n()],
+  integrations: [react()],
 });

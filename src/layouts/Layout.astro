@@ -5,7 +5,7 @@ import { graphql } from '@lib/datocms/graphql';
 import { DraftModeToggler } from '@components/DraftModeToggler';
 import { Seo, type TitleMetaLinkTag } from '@datocms/astro';
 import { isDraftModeEnabled } from '@lib/draftMode';
-import { getLocaleFromUrl, getFallbackLocale } from '@lib/i18n';
+import { defaultLocale, isLocale } from '@lib/i18n';
 import '@root/src/global.css';
 
 import { Header } from '@components/Header';
@@ -19,7 +19,8 @@ const { additionalSeo = [] } = Astro.props;
 
 // Get current locale from params or URL
 const { locale } = Astro.params;
-const currentLocale = locale || (await getLocaleFromUrl(Astro.url)) || (await getFallbackLocale());
+// Use validated locale for GraphQL query
+const validLocale = locale || defaultLocale;
 
 const query = graphql(
   /* GraphQL */ `
@@ -39,7 +40,7 @@ const result = await executeQuery(query, { includeDrafts: draftModeEnabled });
 ---
 
 <!doctype html>
-<html data-theme="coffee" lang={currentLocale}>
+<html data-theme="coffee" lang={validLocale}>
   <head>
     <Seo data={[...result._site.faviconMetaTags, ...additionalSeo]} />
     <meta charset="UTF-8" />
