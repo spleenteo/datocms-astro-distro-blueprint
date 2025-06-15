@@ -1,6 +1,6 @@
 ---
-import { locales, setLocale, t } from '@lib/i18n';
-import { getNavigationData } from '@lib/navigation';
+import { locales, setLocale, t, isLocale, defaultLocale } from '@lib/i18n';
+import type { SiteLocale } from '@lib/i18n/types';import { getNavigationData } from '@lib/navigation';
 import Logo from '@components/AppLogo/AppLogo.astro';
 
 interface Link {
@@ -17,11 +17,17 @@ function trimSlash(path: string) {
 
 const { links: propsLinks } = Astro.props;
 
-// Get current locale from URL params
-const currentLocale = Astro.params.locale || 'en';
+// Get and validate locale - components don't have Astro.params
+// Extract locale from URL path instead
+const urlPath = new URL(Astro.url).pathname;
+const pathSegments = urlPath.split('/').filter(Boolean);
+const urlLocale = pathSegments[0]; // First segment might be locale
+
+// Validate and get proper locale
+const currentLocale: SiteLocale = isLocale(urlLocale) ? urlLocale : defaultLocale;
 setLocale(currentLocale);
 
-const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
+const currentPath = `/${trimSlash(urlPath)}`;
 
 // Get available locales for mobile menu
 const availableLocales = locales;

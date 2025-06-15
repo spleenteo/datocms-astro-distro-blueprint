@@ -94,7 +94,7 @@ function transformFooterLink(item: any, locale: string) {
 let siteLayoutCache: { locale: string; data: any } | null = null;
 
 // Get all site layout data (navigation + footer) with a single query
-async function getSiteLayoutData(locale?: string) {
+async function getSiteLayoutData(locale?: string) {  
   const validLocale = locale || defaultLocale;
 
   // Check cache
@@ -107,16 +107,17 @@ async function getSiteLayoutData(locale?: string) {
       variables: { locale: validLocale as any },
       includeDrafts: false,
     });
-
+    
     const admin = result?.admin;
     if (!admin) {
       return null;
     }
-
+    
     // Cache the result
     siteLayoutCache = { locale: validLocale, data: admin };
     return admin;
   } catch (error: any) {
+
     // Check if we have partial data in the error response
     if (error.response?.body?.data?.admin) {
       const admin = error.response.body.data.admin;
@@ -135,6 +136,10 @@ export async function getNavigationData(locale?: string) {
   try {
     const validLocale = locale || defaultLocale;
     const admin = await getSiteLayoutData(validLocale);
+
+    // console.log('getNavigationData - locale ricevuto:', locale);
+    // console.log('getNavigationData - tipo:', typeof locale);
+    // console.log('getNavigationData - validLocale usato:', validLocale);
 
     if (!admin) {
       return {
@@ -163,7 +168,6 @@ export async function getNavigationData(locale?: string) {
       },
     };
   } catch (error) {
-    // console.error('Error processing navigation data:', error);
     return {
       links: [],
       logo: null,

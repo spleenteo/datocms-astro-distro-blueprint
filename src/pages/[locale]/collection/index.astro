@@ -11,7 +11,6 @@ if (locale && !isLocale(locale)) {
   return Astro.redirect('/404');
 }
 
-
 // Use validated locale for GraphQL query
 const validLocale = locale || defaultLocale;
 
