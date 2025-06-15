@@ -126,7 +126,7 @@ async function getSiteLayoutData(locale?: string) {
       return admin;
     }
 
-    console.error('Error fetching site layout data:', error.message);
+    // console.error('Error fetching site layout data:', error.message);
     return null;
   }
 }
