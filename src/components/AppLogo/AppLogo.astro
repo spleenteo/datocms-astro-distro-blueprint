@@ -1,9 +1,10 @@
 ---
 import { t } from '@lib/i18n';
-import { getHomeHref } from '@lib/routing';
-import { siteName } from '@lib/seo';
+import { getHomeHref } from '@lib/utils';
+import { Image } from 'astro:assets';
+import logo from '@src/assets/logo.png';
 ---
 
-<a rel="home" href={getHomeHref()} aria-label={t('go_to_home_page', { siteName: siteName() })}
-  >[Logo]</a
+<a href={getHomeHref()} class="btn btn-ghost text-xl" aria-label={t('logo')}>
+  <Image src={logo} alt={t('logo')} width="100" height="100" decoding="async" loading="lazy" /></a
 >
