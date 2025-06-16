@@ -5,7 +5,7 @@ import netlify from '@astrojs/netlify';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
-import icon from "astro-icon";
+import icon from 'astro-icon';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -65,8 +65,8 @@ export default defineConfig({
     react(),
     icon({
       include: {
-        iconoir: ['*']
+        iconoir: ['*'],
       },
     }),
-  ]
+  ],
 });

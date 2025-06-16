@@ -12,13 +12,12 @@ Poi in astro.config va importata la libreria (anche o più librerie) o solo alcu
 
 ```js
 integrations: [
-    icon({
-      include: {
-        iconoir: ['*']
-      },
-    }),
-  ]
-
+  icon({
+    include: {
+      iconoir: ['*'],
+    },
+  }),
+];
 ```
 
 Il componente, oltre al nome dell'icona, accetta props
@@ -39,4 +38,3 @@ Il componente, oltre al nome dell'icona, accetta props
     height?: number | string;
   }
 ```
-
