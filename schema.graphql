@@ -3306,6 +3306,7 @@ type SocialLinkRecord implements RecordInterface {
   _status: ItemStatus!
   _unpublishingScheduledAt: DateTime
   _updatedAt: DateTime!
+  iconName: String!
   id: ItemId!
   platform: String!
   url: String!
