@@ -40,7 +40,7 @@ const { home } = await executeQuery(query, {
 });
 
 const draftModeEnabled = isDraftModeEnabled(Astro.cookies);
-  
+
 if (!home) {
   return new Response(null, {
     status: 404,
