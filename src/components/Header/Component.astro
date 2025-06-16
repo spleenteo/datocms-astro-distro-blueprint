@@ -3,6 +3,7 @@ import { locales, setLocale, t, isLocale, defaultLocale } from '@lib/i18n';
 import type { SiteLocale } from '@lib/i18n/types';
 import { getNavigationData } from '@lib/navigation';
 import Logo from '@components/AppLogo/AppLogo.astro';
+import { Icon } from 'astro-icon/components';
 
 interface Link {
   text?: string;
@@ -41,19 +42,7 @@ const links = navigationData.links.length > 0 ? navigationData.links : propsLink
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h8m-8 6h16"></path>
-        </svg>
+        <Icon name="iconoir:menu-scale" />
       </div>
       <ul
         tabindex="0"
@@ -136,16 +125,7 @@ const links = navigationData.links.length > 0 ? navigationData.links : propsLink
     <div class="dropdown dropdown-end">
       <div tabindex="0" role="button" class="btn btn-sm btn-ghost">
         {currentLocale.toUpperCase()}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
-          ></path>
-        </svg>
+        <Icon name="iconoir:nav-arrow-down" />
       </div>
       <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
         {
