@@ -7,7 +7,6 @@ import Layout from '@layouts/Layout.astro';
 // Get and validate current locale
 const { locale } = Astro.params;
 
-
 // Redirect immediately if locale exists but is invalid
 if (locale && !isLocale(locale)) {
   return Astro.redirect('/404');
