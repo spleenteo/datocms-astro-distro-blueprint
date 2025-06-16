@@ -7,6 +7,7 @@ import { DraftModeQueryListener } from '@components/DraftModeQueryListener';
 import { TagFragment } from '@lib/datocms/commonFragments';
 import { isDraftModeEnabled } from '@lib/draftMode';
 import { t, isLocale, defaultLocale, type SiteLocale } from '@lib/i18n';
+import { Icon } from 'astro-icon/components';
 
 const { locale } = Astro.params;
 
@@ -55,7 +56,13 @@ if (!home) {
       <h1 class="text-5xl font-bold">{home.title}</h1>
     </div>
   </div>
-  <footer>Published at {home._publishedAt} {t('logo')}</footer>
+  <footer>
+    Published at {home._publishedAt} {t('logo')}
+
+    <Icon name="iconoir:archery-match" size="50" color="red"/>
+
+
+  </footer>
 
   <DraftModeQueryListener query={query} />
 </Layout>
