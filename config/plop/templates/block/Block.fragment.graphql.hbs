@@ -1,0 +1,20 @@
+import { graphql } from 'gql.tada';
+/**
+* import { ResponsiveImageFragment } from '@components/ResponsiveImage/fragments';
+*  asset {
+*    title
+*    responsiveImage(sizes: "(max-width: 700px) 100vw, 700px") {
+*      ...ResponsiveImageFragment
+*    }
+*  }
+* [ResponsiveImageFragment],
+**/
+
+
+export const {{ pascalCase name }}Fragment = graphql(
+  /* GraphQL */ `
+    fragment {{ pascalCase name }}Fragment on {{ pascalCase name }}Record {
+      id
+    }
+  `,
+);
