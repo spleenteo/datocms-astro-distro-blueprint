@@ -70,6 +70,7 @@ export const SITE_LAYOUT_QUERY = graphql(`
       }
       socialLinks {
         platform
+        iconName
         url
       }
     }

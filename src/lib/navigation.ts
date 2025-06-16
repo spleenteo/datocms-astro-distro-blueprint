@@ -207,6 +207,7 @@ export async function getFooterData(locale?: string) {
       return {
         ariaLabel: social.platform,
         href: social.url,
+        code: social.iconName,
         icon: icon || 'tabler:external-link',
       };
     });
